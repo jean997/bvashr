@@ -14,3 +14,4 @@ devtools::install_github("jhmarcus/bvashr")
 * port posterior computations from other functions
 * port posterior plot code
 * XD install instructions
+* vignettes

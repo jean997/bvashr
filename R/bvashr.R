@@ -1,4 +1,4 @@
-#' @import ExtremeDeconvolution MCMCpack mvtnorm
+#' @import dplyr ggplot2 knitr ExtremeDeconvolution MCMCpack mvtnorm
 
 #' @title Estimate prior
 #'
@@ -26,7 +26,7 @@ estimate_prior <- function(X, S, K){
   
   # randomly intialize rest of covariance matrices
   for (k in 2:K){
-    sigma_init[[k]] <- MCMCpack::riwish(3, C) # inv-wishart distributed with sample covariance mat
+    sigma_init[[k]] <- riwish(3, C) # inv-wishart distributed with sample covariance mat
     sigma_fix[[k]] <- FALSE
   }
   
@@ -34,10 +34,10 @@ estimate_prior <- function(X, S, K){
   pi_init <- rep(1 / K, K)
   
   # run the EM
-  prior_res <- ExtremeDeconvolution::extreme_deconvolution(X, S^2, pi_init,
-                                                           mu_fix, sigma_init,
-                                                           fixmean=TRUE,
-                                                           fixcovar=sigma_fix)
+  prior_res <- extreme_deconvolution(X, S^2, pi_init,
+                                     mu_fix, sigma_init,
+                                     fixmean=TRUE,
+                                     fixcovar=sigma_fix)
   
   # convert to array and rename
   prior_res$U0 <- array(as.numeric(unlist(prior_res$xcovar)), dim=c(2, 2, K))
@@ -46,31 +46,77 @@ estimate_prior <- function(X, S, K){
   return(prior_res)
 }
 
-#' @title Sample prior
+#' @title Get prior component parameters
 #'
 #' @description TODO: fill in
 #'
-#' @param N number of samples
 #' @param prior_res list output from extreme deconvolution
+#' @param table boolean if true return kable defaults to False
 #'
-#' @return R N x 3 matrix of samples and latent component as columns
+#' @return parameters of prior components
 #' @export
-sample_prior <- function(N, prior_res){
+get_prior_comp_df <- function(prior_res, table=FALSE){
   pi_hat <- prior_res$pi_hat
-  U0 <- prior_res$U0
   K <- length(pi_hat)
-  R <- matrix(NA, nrow=N, ncol=3)
-  for(i in 1:N){
-    for(k in 1:K){
-      k <- which(rmultinom(1, 1, pi_hat) == 1)
-      R[i, 1:2] <- mvtnorm::rmvnorm(n=1, mean=c(0, 0), sigma=U0[,,k])
-      R[i, 3] <- k
-    }
+  rhos <- c(0.0, rep(NA, K-1))
+  sds_1 <- c(0.0, rep(NA, K-1))
+  sds_2 <- c(0.0, rep(NA, K-1))
+  for(k in 2:7){
+    U0_k <- prior_res$U0[,,k]
+    sds_1[k] <- sqrt(U0_k[1, 1]) 
+    sds_2[k] <- sqrt(U0_k[2, 2]) 
+    rhos[k] <- U0_k[1,2] / (sds_1[k] * sds_2[k])
   }
-  return(R)
+  comp_df <- data.frame(k=1:K - 1, pi_k=pi_hat, 
+                        rho_k=rhos, sd_1k=sds_1, 
+                        sd_2k=sds_2) 
+  
+  if(table){
+    return(kable(comp_df %>% arrange(pi_k)))
+  } else {
+    return(comp_df %>% arrange(pi_k))
+  }
 }
 
-# plot_fitted_prior <- function(){
-#   
-#   
-# }
+#' @title Plot prior
+#'
+#' @description TODO: fill in
+#'
+#' @param trait_1 char first trait name
+#' @param trait_2 char second trait name
+#' @param prior_res list output from extreme deconvolution
+#'
+#' @return p ggplot object of prior plot
+#' @export
+plot_prior <- function(trait_1, trait_2, prior_res){
+  K <- length(prior_res$pi_hat)
+  comp_df <- get_prior_comp_df(prior_res)
+  
+  # null comp
+  comp_df_0 <- comp_df %>% filter(k == 0)
+  df_0 <- data.frame(x=0.0, y=0.0, k=factor(1))
+  
+  # non-null comps
+  comp_df_1 <- comp_df %>% filter(k != 0)
+  df_1 <- data.frame()
+  for(i in 1:nrow(comp_df_1)){
+    ellipse_i <- ellipse(comp_df_1[i, "rho_k"], 
+                         scale=c(comp_df_1[i, "sd_1k"], comp_df_1[i, "sd_2k"]), 
+                         centre=c(0, 0))
+    df_1 <- rbind(df_1, as.data.frame(ellipse_i) %>% mutate(k=factor(comp_df_1[i, "k"])))
+  }
+  # add mixture proportions to factors
+  levels(df_0$k) <- round(prior_res$pi_hat[1], digits=3)
+  levels(df$k) <- round(prior_res$pi_hat[2:K], digits=3)
+  
+  # create plot
+  p <- ggplot() +
+       geom_point(data=df_0, aes(x=x, y=y, color=k), size=2.5) + 
+       geom_path(data=df, aes(x=x, y=y, color=k)) + 
+       xlab(paste0("Prior Effect (", toupper(trait_1), ")")) + 
+       ylab(paste0("Prior Effect (", toupper(trait_2), ")")) +
+       guides(color=guide_legend(title="k")) +
+       theme_bw()
+
+  return(p)
+}

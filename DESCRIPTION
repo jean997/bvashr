@@ -12,6 +12,8 @@ Imports:
   MCMCpack,
   ggplot2,
   dplyr,
+  ellipse,
+  knitr,
   mvtnorm
 Suggests:
     testthat,

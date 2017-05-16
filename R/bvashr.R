@@ -78,8 +78,10 @@ get_prior_comp <- function(prior_res, table=FALSE){
     sds_2[k] <- sqrt(U0_k[2, 2]) 
     rhos[k] <- U0_k[1,2] / (sds_1[k] * sds_2[k])
   }
-  comp_df <- data.frame(k=1:K - 1, pi_k=pi_hat, 
-                        rho_k=rhos, sd_1k=sds_1, 
+  comp_df <- data.frame(k=1:K - 1, 
+                        pi_k=pi_hat, 
+                        rho_k=rhos, 
+                        sd_1k=sds_1, 
                         sd_2k=sds_2) 
   
   if(table){
@@ -116,8 +118,8 @@ plot_prior <- function(trait_1, trait_2, prior_res){
   for(i in 1:nrow(comp_df_1)){
     ellipse_i <- ellipse(comp_df_1[i, "rho_k"], 
                          scale=c(comp_df_1[i, "sd_1k"], comp_df_1[i, "sd_2k"]), 
-                         centre=c(0, 0))
-    df_1 <- rbind(df_1, as.data.frame(ellipse_i) %>% mutate(k=factor(comp_df_1[i, "k"])))
+                         centre=c(0.0, 0.0))
+    df_1 <- rbind(df_1, as.data.frame(ellipse_i) %>% mutate(k=factor(comp_df_1[i, "k"] + 1)))
   }
 
   # add mixture proportions to factors

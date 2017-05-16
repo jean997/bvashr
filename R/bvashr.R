@@ -1,4 +1,4 @@
-#' @import dplyr ggplot2 knitr ExtremeDeconvolution MCMCpack mvtnorm
+#' @import dplyr ggplot2 knitr ExtremeDeconvolution MCMCpack mvtnorm ellipse
 
 #' @title Estimate prior
 #'
@@ -44,6 +44,7 @@ estimate_prior <- function(X, S, K){
   prior_res$pi_hat <- prior_res$xamp
   
   return(prior_res)
+
 }
 
 #' @title Get prior component parameters
@@ -56,6 +57,7 @@ estimate_prior <- function(X, S, K){
 #' @return parameters of prior components
 #' @export
 get_prior_comp_df <- function(prior_res, table=FALSE){
+
   pi_hat <- prior_res$pi_hat
   K <- length(pi_hat)
   rhos <- c(0.0, rep(NA, K-1))
@@ -76,6 +78,7 @@ get_prior_comp_df <- function(prior_res, table=FALSE){
   } else {
     return(comp_df %>% arrange(pi_k))
   }
+
 }
 
 #' @title Plot prior
@@ -89,6 +92,7 @@ get_prior_comp_df <- function(prior_res, table=FALSE){
 #' @return p ggplot object of prior plot
 #' @export
 plot_prior <- function(trait_1, trait_2, prior_res){
+
   K <- length(prior_res$pi_hat)
   comp_df <- get_prior_comp_df(prior_res)
   
@@ -107,16 +111,17 @@ plot_prior <- function(trait_1, trait_2, prior_res){
   }
   # add mixture proportions to factors
   levels(df_0$k) <- round(prior_res$pi_hat[1], digits=3)
-  levels(df$k) <- round(prior_res$pi_hat[2:K], digits=3)
+  levels(df_1$k) <- round(prior_res$pi_hat[2:K], digits=3)
   
   # create plot
   p <- ggplot() +
        geom_point(data=df_0, aes(x=x, y=y, color=k), size=2.5) + 
-       geom_path(data=df, aes(x=x, y=y, color=k)) + 
+       geom_path(data=df_1, aes(x=x, y=y, color=k)) + 
        xlab(paste0("Prior Effect (", toupper(trait_1), ")")) + 
        ylab(paste0("Prior Effect (", toupper(trait_2), ")")) +
        guides(color=guide_legend(title="k")) +
        theme_bw()
 
   return(p)
+
 }

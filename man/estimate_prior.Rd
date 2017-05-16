@@ -17,5 +17,6 @@ estimate_prior(X, S, K)
 prior_res list from output of ExtremeDeconvolution
 }
 \description{
-TODO: fill in
+estimates parameters of a bivariate ash prior using an 
+             EM algorithim implemented in the ExtremeDeconvolution package
 }

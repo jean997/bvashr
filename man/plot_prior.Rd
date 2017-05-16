@@ -11,11 +11,12 @@ plot_prior(trait_1, trait_2, prior_res)
 
 \item{trait_2}{char second trait name}
 
-\item{prior_res}{list output from extreme deconvolution}
+\item{prior_res}{list output from estimate_prior}
 }
 \value{
 p ggplot object of prior plot
 }
 \description{
-TODO: fill in
+plots ellipes of fitted prior covariance
+             matricies of each mixture component
 }

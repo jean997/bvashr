@@ -2,7 +2,8 @@
 
 #' @title Estimate prior
 #'
-#' @description TODO: fill in
+#' @description estimates parameters of a bivariate ash prior using an 
+#'              EM algorithim implemented in the ExtremeDeconvolution package
 #'
 #' @param X n x 2 matrix of estimated effects
 #' @param S n x 2 matrix of std. errors
@@ -12,7 +13,6 @@
 #' @export
 estimate_prior <- function(X, S, K){
   
-  X <- X
   C <- (t(X) %*% X) / (nrow(X) - 1) # sample covariance mat
   mu_fix <- matrix(0, nrow=K, ncol=2) # fix mean at 0
   
@@ -26,39 +26,48 @@ estimate_prior <- function(X, S, K){
   
   # randomly intialize rest of covariance matrices
   for (k in 2:K){
-    sigma_init[[k]] <- riwish(3, C) # inv-wishart distributed with sample covariance mat
+
+    # initialze using inverse-wishart to ensure pos-def
+    sigma_init[[k]] <- riwish(3, C) 
     sigma_fix[[k]] <- FALSE
+
   }
   
   # intialize mixture proportions
   pi_init <- rep(1 / K, K)
   
   # run the EM
-  prior_res <- extreme_deconvolution(X, S^2, pi_init,
+  prior_res <- extreme_deconvolution(X, S^2, 
+                                     pi_init,
                                      mu_fix, sigma_init,
                                      fixmean=TRUE,
                                      fixcovar=sigma_fix)
   
-  # convert to array and rename
+  # add / reformt fitted params to list
+  prior_res$U0_init <- array(as.numeric(unlist(sigma_init)), dim=c(2, 2, K))
+  prior_res$pi_init <- prior_res$xamp
   prior_res$U0 <- array(as.numeric(unlist(prior_res$xcovar)), dim=c(2, 2, K))
-  prior_res$pi_hat <- prior_res$xamp
-  
+  prior_res$pi <- prior_res$xamp
+  prior_res <- prior_res[-c(1, 2, 3)]
+
   return(prior_res)
 
 }
 
 #' @title Get prior component parameters
 #'
-#' @description TODO: fill in
+#' @description computes formatted table (df, or kable) of fitted prior
+#'              paramters including mixture propotions, correlation coef, 
+#'              and std devs 
 #'
-#' @param prior_res list output from extreme deconvolution
+#' @param prior_res list output from estimate_prior
 #' @param table boolean if true return kable defaults to False
 #'
 #' @return parameters of prior components
 #' @export
-get_prior_comp_df <- function(prior_res, table=FALSE){
+get_prior_comp <- function(prior_res, table=FALSE){
 
-  pi_hat <- prior_res$pi_hat
+  pi_hat <- prior_res$pi
   K <- length(pi_hat)
   rhos <- c(0.0, rep(NA, K-1))
   sds_1 <- c(0.0, rep(NA, K-1))
@@ -83,18 +92,19 @@ get_prior_comp_df <- function(prior_res, table=FALSE){
 
 #' @title Plot prior
 #'
-#' @description TODO: fill in
+#' @description plots ellipes of fitted prior covariance
+#'              matricies of each mixture component
 #'
 #' @param trait_1 char first trait name
 #' @param trait_2 char second trait name
-#' @param prior_res list output from extreme deconvolution
+#' @param prior_res list output from estimate_prior
 #'
 #' @return p ggplot object of prior plot
 #' @export
 plot_prior <- function(trait_1, trait_2, prior_res){
 
-  K <- length(prior_res$pi_hat)
-  comp_df <- get_prior_comp_df(prior_res)
+  K <- length(prior_res$pi)
+  comp_df <- get_prior_comp(prior_res)
   
   # null comp
   comp_df_0 <- comp_df %>% filter(k == 0)
@@ -109,9 +119,10 @@ plot_prior <- function(trait_1, trait_2, prior_res){
                          centre=c(0, 0))
     df_1 <- rbind(df_1, as.data.frame(ellipse_i) %>% mutate(k=factor(comp_df_1[i, "k"])))
   }
+
   # add mixture proportions to factors
-  levels(df_0$k) <- round(prior_res$pi_hat[1], digits=3)
-  levels(df_1$k) <- round(prior_res$pi_hat[2:K], digits=3)
+  levels(df_0$k) <- round(prior_res$pi[1], digits=3)
+  levels(df_1$k) <- round(prior_res$pi[2:K], digits=3)
   
   # create plot
   p <- ggplot() +

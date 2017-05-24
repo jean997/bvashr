@@ -14,7 +14,10 @@ Imports:
   dplyr,
   ellipse,
   knitr,
-  mvtnorm
+  mvtnorm,
+  matrixStats,
+  stats4,
+  ashr
 Suggests:
     testthat,
     roxygen2

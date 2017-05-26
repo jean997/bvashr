@@ -21,7 +21,7 @@ get_causal_comp_lik_i <- function(y_i, s_1, s_2, U, lambda_12, lambda_21, rho){
     K <- dim(U)[3]
     
     # loadings matrix
-    Lambda <- matrix(c(1, lambda_21, lambda_12, 1), nrow=2, byrow=TRUE)
+    Lambda <- matrix(c(1, lambda_12, lambda_21, 1), nrow=2, byrow=TRUE)
   
     # error matrix
     cov_i <- rho * s_1 * s_2
@@ -90,7 +90,7 @@ get_causal_log_lik_i <- function(y_i, s_1, s_2, U, w, lambda_12, lambda_21, rho)
     stopifnot(length(w) == K)
   
     # loadings matrix
-    Lambda <- matrix(c(1, lambda_21, lambda_12, 1), nrow=2, byrow=TRUE)
+    Lambda <- matrix(c(1, lambda_12, lambda_21, 1), nrow=2, byrow=TRUE)
   
     # error matrix
     cov_i <- rho * s_1 * s_2

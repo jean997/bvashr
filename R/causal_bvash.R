@@ -93,7 +93,7 @@ estimate_w_lambda_rho <- function(Y, S, U, max_iter=10){
     for(l in 1:max_iter){
 
         # estimate the mixture proportions given the loadings and rho
-        w_l <- estimate_w_given_lambda_rho(Y, S, U, lambda_12_l, lambda_21_l, rho) 
+        w_l <- estimate_w_given_lambda_rho(Y, S, U, lambda_12_l, lambda_21_l, rho_l) 
 
         # estimate the loadings and rho given the mixture proportions
         lambda_rho_res <- estimate_lambda_rho_given_w(Y, S, U, w_l)

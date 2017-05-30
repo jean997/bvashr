@@ -32,5 +32,13 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# jupyter notebooks ignored for now
-notebooks/
+# dev dirs
+sandbox/
+
+# cpp
+*.o
+*.so
+*.dll
+
+# makefile
+Makefile

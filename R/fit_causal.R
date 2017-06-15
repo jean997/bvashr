@@ -1,8 +1,8 @@
 #' @import ashr stats4
 
-#' Estimate the mixture proportions
+#' @title Estimate the mixture proportions
 #'
-#' estimates the mixture proportions via convex optimzation condtional
+#' @description estimates the mixture proportions via convex optimzation condtional
 #' on the current estimate of the loadings matrix
 #' 
 #' @param Y matrix of betahats n x 2 
@@ -25,9 +25,9 @@ estimate_pi_given_lambda_rho <- function(Y, S, U, lambda_12, lambda_21, rho){
 
 }
 
-#' Estimate lambda and rho  
+#' @title Estimate lambda and rho  
 #'
-#' estimate lambda and rho condtional on 
+#' @description estimate lambda and rho condtional on 
 #' knowing the mixture proportions using 
 #' a blackbox numerical optimizer
 #' 
@@ -62,9 +62,9 @@ estimate_lambda_rho_given_pi <- function(Y, S, U, pi_vec){
 
 }
 
-#' Estimate pi, lambda, and rho in 2-step iterative algorithim
+#' @title Estimate pi, lambda, and rho in 2-step iterative algorithim
 #'
-#' estimates pi, lambda and rho in a 2-step iterative algorithim where
+#' @description estimates pi, lambda and rho in a 2-step iterative algorithim where
 #' in each iteration we first estimate w given lambda and rho by convex
 #' optimazation and then estimate lambda and rho given pi using black box 
 #' numerical optimization

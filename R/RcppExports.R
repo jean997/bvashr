@@ -12,7 +12,6 @@
 #' @return mahalanobis distance
 #' @export
 #'
-#'
 Mahalanobis <- function(x, center, cov) {
     .Call('bvashr_Mahalanobis', PACKAGE = 'bvashr', x, center, cov)
 }
@@ -28,14 +27,13 @@ Mahalanobis <- function(x, center, cov) {
 #' @return logretval evaluated density
 #' @export
 #'
-#'
 dmvnorm_arma <- function(x, mean, sigma, log = FALSE) {
     .Call('bvashr_dmvnorm_arma', PACKAGE = 'bvashr', x, mean, sigma, log)
 }
 
-#' Bivariate normal density
+#' @title Bivariate normal density
 #' 
-#' density of bivariate normal distribution
+#' @description density of bivariate normal distribution
 #' 
 #' @param y vector of length 2 of observations
 #' @param mu vector of length 2 of means 
@@ -50,23 +48,22 @@ dbvnorm <- function(y, mu, sigma, log_lik = FALSE) {
     .Call('bvashr_dbvnorm', PACKAGE = 'bvashr', y, mu, sigma, log_lik)
 }
 
-#' Log sum exponential
+#' @title Log sum exponential
 #'
-#' inspired by the implementation in https://github.com/dcgerard/updog/blob/master/src/utitility.cpp
+#' @description inspired by the implementation in https://github.com/dcgerard/updog/blob/master/src/utitility.cpp
 #'
 #' @param y vector to be log-sum-exponentiated 
 #'
 #' @return lse doube of log-sum-exponentiated vector 
 #' @export
 #'
-#'
 log_sum_exp <- function(y) {
     .Call('bvashr_log_sum_exp', PACKAGE = 'bvashr', y)
 }
 
-#' Gets likelihood matrix for causal factor model (cfm)
+#' @title Gets likelihood matrix for causal factor model (cfm)
 #' 
-#' Computes n x K matrix of component likelihoods
+#' @description Computes n x K matrix of component likelihoods
 #' 
 #' @param y matrix n x 2 of observations
 #' @param s matrix n x 2 of std. errors
@@ -78,21 +75,19 @@ log_sum_exp <- function(y) {
 #' @return lik_mat matrix n x K of component likelihoods
 #' @export
 #'
-#'
 get_lik_mat_cfm <- function(y, s, u, lambda_12, lambda_21, rho) {
     .Call('bvashr_get_lik_mat_cfm', PACKAGE = 'bvashr', y, s, u, lambda_12, lambda_21, rho)
 }
 
-#' Gets log likelihood for causal factor model (cfm)
+#' @title Gets log likelihood for causal factor model (cfm)
 #'
-#' Computes likelihood under causal factor model
+#' @description Computes likelihood under causal factor model
 #'
 #' @inheritParams get_lik_mat_cfm
 #' @param pi_vec vector vector of mixture proportions
 #'
 #' @return ll double likelihood under causal factor model
 #' @export
-#'
 #'
 get_log_likelihood_cfm <- function(y, s, u, lambda_12, lambda_21, rho, pi_vec) {
     .Call('bvashr_get_log_likelihood_cfm', PACKAGE = 'bvashr', y, s, u, lambda_12, lambda_21, rho, pi_vec)

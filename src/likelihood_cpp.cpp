@@ -20,7 +20,6 @@ const double log2pi = std::log(2.0 * M_PI);
 //' @return mahalanobis distance
 //' @export
 //'
-//'
 // [[Rcpp::export]]
 arma::vec Mahalanobis(arma::mat x, arma::rowvec center, arma::mat cov) {
     
@@ -46,7 +45,6 @@ arma::vec Mahalanobis(arma::mat x, arma::rowvec center, arma::mat cov) {
 //' @return logretval evaluated density
 //' @export
 //'
-//'
 // [[Rcpp::export]]
 arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log = false) { 
     
@@ -62,9 +60,9 @@ arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log
     
 }
 
-//' Bivariate normal density
+//' @title Bivariate normal density
 //' 
-//' density of bivariate normal distribution
+//' @description density of bivariate normal distribution
 //' 
 //' @param y vector of length 2 of observations
 //' @param mu vector of length 2 of means 
@@ -102,15 +100,14 @@ double dbvnorm(arma::rowvec y, arma::rowvec mu, arma::mat sigma, bool log_lik=fa
     }
 }
 
-//' Log sum exponential
+//' @title Log sum exponential
 //'
-//' inspired by the implementation in https://github.com/dcgerard/updog/blob/master/src/utitility.cpp
+//' @description inspired by the implementation in https://github.com/dcgerard/updog/blob/master/src/utitility.cpp
 //'
 //' @param y vector to be log-sum-exponentiated 
 //'
 //' @return lse doube of log-sum-exponentiated vector 
 //' @export
-//'
 //'
 // [[Rcpp::export]]
 double log_sum_exp(arma::vec y){
@@ -134,9 +131,9 @@ double log_sum_exp(arma::vec y){
 
 // Causal factor model functions -----------------------------
 
-//' Gets likelihood matrix for causal factor model (cfm)
+//' @title Gets likelihood matrix for causal factor model (cfm)
 //' 
-//' Computes n x K matrix of component likelihoods
+//' @description Computes n x K matrix of component likelihoods
 //' 
 //' @param y matrix n x 2 of observations
 //' @param s matrix n x 2 of std. errors
@@ -147,7 +144,6 @@ double log_sum_exp(arma::vec y){
 //' 
 //' @return lik_mat matrix n x K of component likelihoods
 //' @export
-//'
 //'
 // [[Rcpp::export]]
 arma::mat get_lik_mat_cfm(const arma::mat y, const arma::mat s, 
@@ -200,16 +196,15 @@ arma::mat get_lik_mat_cfm(const arma::mat y, const arma::mat s,
     
 }
 
-//' Gets log likelihood for causal factor model (cfm)
+//' @title Gets log likelihood for causal factor model (cfm)
 //'
-//' Computes likelihood under causal factor model
+//' @description Computes likelihood under causal factor model
 //'
 //' @inheritParams get_lik_mat_cfm
 //' @param pi_vec vector vector of mixture proportions
 //'
 //' @return ll double likelihood under causal factor model
 //' @export
-//'
 //'
 // [[Rcpp::export]]
 double get_log_likelihood_cfm(const arma::mat y, const arma::mat s, const arma::cube u,

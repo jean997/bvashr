@@ -17,7 +17,14 @@ Imports:
     RcppArmadillo,
     mvtnorm,
     ashr,
-    stats4
+    stats4,
+    dplyr,
+    ggplot2,
+    knitr,
+    ExtremeDeconvolution,
+    MCMCpack,
+    mvtnorm,
+    ellipse
 LinkingTo: 
     Rcpp,
     RcppArmadillo

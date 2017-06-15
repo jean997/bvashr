@@ -268,3 +268,4 @@ double get_log_likelihood_cfm(const arma::mat y, const arma::mat s, const arma::
     return ll;
 
 }
+

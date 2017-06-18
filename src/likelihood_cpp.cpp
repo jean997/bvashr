@@ -264,3 +264,39 @@ double get_log_likelihood_cfm(const arma::mat y, const arma::mat s, const arma::
 
 }
 
+//' @title Compute likelihood matrix for signing sharing model
+//'
+//' @description TODO: description
+//' 
+//' @param m matrix of sign probabilites
+//'
+//' @export
+// [[Rcpp::export]]
+arma::mat get_lik_mat_ss(arma::mat m){
+    
+    // number of observations and components
+    const int n = m.n_rows;
+    int j;
+    
+    // likelihood matrix
+    arma::mat lik_mat(m.n_rows, 9);
+    
+    for(int i=0; i<n; i++){
+
+        j = 0;
+
+        for(int k=0; k<3; k++){
+            for(int l=0; l<3; l++){
+            
+                // fill in likelihood matrix
+                lik_mat(i, j) = (m(i, k) / m(i, 1)) * (m(i, 3 + l) / m(i, 4));
+                j = j + 1;
+
+            }
+        }
+    }
+    
+    return lik_mat;
+
+}
+

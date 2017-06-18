@@ -93,3 +93,14 @@ get_log_likelihood_cfm <- function(y, s, u, lambda_12, lambda_21, rho, pi_vec) {
     .Call('bvashr_get_log_likelihood_cfm', PACKAGE = 'bvashr', y, s, u, lambda_12, lambda_21, rho, pi_vec)
 }
 
+#' @title Compute likelihood matrix for signing sharing model
+#'
+#' @description TODO: description
+#' 
+#' @param m matrix of sign probabilites
+#'
+#' @export
+get_lik_mat_ss <- function(m) {
+    .Call('bvashr_get_lik_mat_ss', PACKAGE = 'bvashr', m)
+}
+

@@ -91,6 +91,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_lik_mat_ss
+arma::mat get_lik_mat_ss(arma::mat m);
+RcppExport SEXP bvashr_get_lik_mat_ss(SEXP mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type m(mSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_lik_mat_ss(m));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"bvashr_Mahalanobis", (DL_FUNC) &bvashr_Mahalanobis, 3},
@@ -99,6 +110,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"bvashr_log_sum_exp", (DL_FUNC) &bvashr_log_sum_exp, 1},
     {"bvashr_get_lik_mat_cfm", (DL_FUNC) &bvashr_get_lik_mat_cfm, 6},
     {"bvashr_get_log_likelihood_cfm", (DL_FUNC) &bvashr_get_log_likelihood_cfm, 7},
+    {"bvashr_get_lik_mat_ss", (DL_FUNC) &bvashr_get_lik_mat_ss, 1},
     {NULL, NULL, 0}
 };
 

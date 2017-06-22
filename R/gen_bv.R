@@ -104,11 +104,11 @@ get_prior_comp <- function(prior_res, table=FALSE){
     sds_1 <- c(0.0, rep(NA, K-1))
     sds_2 <- c(0.0, rep(NA, K-1))
     for(k in 2:K){
-
         U0_k <- prior_res$U0[,,k]
         sds_1[k] <- sqrt(U0_k[1, 1])
         sds_2[k] <- sqrt(U0_k[2, 2]) 
-        rhos[k] <- U0_k[1,2] / (sds_1[k] * sds_2[k])
+        if(sds_1[k]==0 | sds_2[k]==0) rhos[k] <- 0
+            else rhos[k] <- U0_k[1,2] / (sds_1[k] * sds_2[k])
 
     }
     comp_df <- data.frame(k=1:K - 1, 
